@@ -23,8 +23,43 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 }
 
 namespace Window {
+
 	LPCSTR WndClassName = "Project X Class";
 	HWND hwnd = NULL;
+
+	int messageloop(int (*display)(float timeDelta)) {
+		MSG msg;
+		ZeroMemory(&msg, sizeof(MSG));
+
+		static float lastTime = (double)clock() / (double)CLOCKS_PER_SEC;
+
+		while (true) {
+			if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+
+				if (msg.message == WM_QUIT)
+					break;
+
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+
+			} else {
+
+				//Set the time
+				float currTime = (double)clock() / (double)CLOCKS_PER_SEC;
+
+				//Set the speed until the next frame
+				float timeDelta = (currTime - lastTime) * 0.001f;
+
+				display(timeDelta);    //Display the goods
+
+				//Last time equal to current time
+				lastTime = currTime;
+
+			}
+
+		}
+		return (int)msg.wParam;
+	}
 
 	int InitializeWindow(HINSTANCE hInstance, int ShowWnd, int width, int height, bool windowed)
 	{
@@ -88,40 +123,6 @@ namespace Window {
 			return result;
 		}
 		return 0;
-	}
-
-	int messageloop(int (*display)(float timeDelta)) {
-		MSG msg;
-		ZeroMemory(&msg, sizeof(MSG));
-
-		static float lastTime = (double)clock() / (double)CLOCKS_PER_SEC;
-
-		while (true) {
-			if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-
-				if (msg.message == WM_QUIT)
-					break;
-
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-
-			} else {
-
-				//Set the time
-				float currTime = (double)clock() / (double)CLOCKS_PER_SEC;
-
-				//Set the speed until the next frame
-				float timeDelta = (currTime - lastTime) * 0.001f;
-
-				display(timeDelta);    //Display the goods
-
-				//Last time equal to current time
-				lastTime = currTime;
-
-			}
-
-		}
-		return (int)msg.wParam;
 	}
 
 	LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {

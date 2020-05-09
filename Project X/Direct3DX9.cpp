@@ -1,8 +1,16 @@
 #include <d3d9.h>
+#include <d3dx9math.h>
 #include "Direct3DX9.h"
 #include "Settings.h"
-
 namespace DirectX {
+    namespace View {
+        D3DXVECTOR3 pos(0.0f, 0.0f, -2.0f);
+        D3DXVECTOR3 targ(0.0f, 0.0f, 0.0f);
+        D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
+
+        D3DXMATRIX View;
+    }
+
 	IDirect3D9* d3d9 = NULL;
 	IDirect3DDevice9* d3dDevice = NULL;
 
@@ -25,10 +33,21 @@ namespace DirectX {
         d3dDevice->SetRenderState(D3DRS_LIGHTING, false);
         //d3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
         initVertices();
-        
+
+        D3DXMATRIX proj;
+        D3DXMatrixPerspectiveFovLH(
+            &proj,
+            D3DX_PI * 0.5f, // fov
+            (float)Settings::Window::width / (float)Settings::Window::height,
+            0.0f, // start of sight
+            1000.0f); // end of sight
+
+        d3dDevice->SetTransform(D3DTS_PROJECTION, &proj);
+
         d3dDevice->SetStreamSource(0, SquareVertexBuffer, 0, sizeof(Vertex));
         d3dDevice->SetIndices(SquareIndexBuffer);
         d3dDevice->SetFVF(VertexFVF);
+
 		return 0;
 	}
 
@@ -45,18 +64,55 @@ namespace DirectX {
 
     int renderScene(float timeDelta)    //Renders a single frame
     {
-            //Clear the window to 0x00000000 (black)
-            d3dDevice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00000055, 1.0f, 0);
+        // KEYBOARD INPUTS
+        if (GetAsyncKeyState(0x57)) // W
+            View::pos.z += timeDelta * 1000.f;
+        if (GetAsyncKeyState(0x53)) // S
+            View::pos.z -= timeDelta * 1000.f;
 
-            //Start drawing our scene
-            d3dDevice->BeginScene();
+        if (GetAsyncKeyState(0x44)) // D
+            View::pos.x += timeDelta * 1000.f;
+        if (GetAsyncKeyState(0x41)) // A
+            View::pos.x -= timeDelta * 1000.f;
 
-            d3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);
-            //Stop drawing our scene
-            d3dDevice->EndScene();
+        if (GetAsyncKeyState(VK_LSHIFT)) // Left Shift
+            View::pos.y += timeDelta * 1000.f;
+        if (GetAsyncKeyState(VK_LCONTROL)) // Left Control
+            View::pos.y -= timeDelta * 1000.f;
 
-            //Display our newly created scene
-            d3dDevice->Present(0, 0, 0, 0);
+
+
+        // NORMALIZE
+        //if (y >= 6.28f)
+        //    y = 0.0f;
+
+        //if (x >= 6.28f)
+        //    x = 0.0f;
+
+            
+
+        // COMPUTE
+        D3DXMatrixLookAtLH(&View::View, &View::pos, &View::targ, &View::up);
+        d3dDevice->SetTransform(D3DTS_VIEW, &View::View);
+
+
+
+        //Clear the window to 0x00000000 (black)
+        d3dDevice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00000055, 1.0f, 0);
+        //Start drawing our scene
+        d3dDevice->BeginScene();
+
+
+
+        // DRAW
+        d3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);
+
+
+
+        //Stop drawing our scene
+        d3dDevice->EndScene();
+        //Display our newly created scene
+        d3dDevice->Present(0, 0, 0, 0);
         return 0;
     }
 
