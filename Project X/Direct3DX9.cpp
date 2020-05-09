@@ -80,6 +80,10 @@ namespace DirectX {
         if (GetAsyncKeyState(VK_LCONTROL)) // Left Control
             View::pos.y -= timeDelta * 1000.f;
 
+        View::targ.x = View::pos.x;
+        View::targ.y = View::pos.y;
+        View::targ.z = View::pos.z + .00001f;
+
 
 
         // NORMALIZE
@@ -92,6 +96,8 @@ namespace DirectX {
             
 
         // COMPUTE
+
+
         D3DXMatrixLookAtLH(&View::View, &View::pos, &View::targ, &View::up);
         d3dDevice->SetTransform(D3DTS_VIEW, &View::View);
 
