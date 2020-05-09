@@ -6,11 +6,35 @@ namespace DirectX {
 	IDirect3D9* d3d9 = NULL;
 	IDirect3DDevice9* d3dDevice = NULL;
 
+    //
+    IDirect3DVertexBuffer9* SquareVertexBuffer = 0;
+    IDirect3DIndexBuffer9* SquareIndexBuffer = 0;
+    constexpr int SquareVertexCount = 4;
+    constexpr int SquareIndexCount = 6;
+    //Vertex structure
+    struct Vertex {
+        FLOAT x, y, z;
+        D3DCOLOR color;    //add color to vertex structure
+    };
+
+    //Define the Flexible vertex format
+    const DWORD VertexFVF = D3DFVF_XYZ | D3DFVF_DIFFUSE;
+    //
+
 	int setupScene() {
+        d3dDevice->SetRenderState(D3DRS_LIGHTING, false);
+        //d3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+        initVertices();
+        
+        d3dDevice->SetStreamSource(0, SquareVertexBuffer, 0, sizeof(Vertex));
+        d3dDevice->SetIndices(SquareIndexBuffer);
+        d3dDevice->SetFVF(VertexFVF);
 		return 0;
 	}
 
 	void cleanUp() {
+        SquareIndexBuffer->Release();
+        SquareVertexBuffer->Release();
         d3dDevice->Release();
         if (d3d9) {    //If there is a Direct3D device
             d3d9->Release();    //Release Memory from the device
@@ -27,6 +51,7 @@ namespace DirectX {
             //Start drawing our scene
             d3dDevice->BeginScene();
 
+            d3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);
             //Stop drawing our scene
             d3dDevice->EndScene();
 
@@ -135,5 +160,61 @@ namespace DirectX {
         return 0;
     }
 
+    void initVertices() {
+        d3dDevice->CreateVertexBuffer(
+            SquareVertexCount * sizeof(Vertex),
+            D3DUSAGE_WRITEONLY,
+            VertexFVF,
+            D3DPOOL_MANAGED,
+            &SquareVertexBuffer,
+            0);
 
+        d3dDevice->CreateIndexBuffer(
+            SquareIndexCount * sizeof(WORD),
+            D3DUSAGE_WRITEONLY,
+            D3DFMT_INDEX16,
+            D3DPOOL_MANAGED,
+            &SquareIndexBuffer,
+            0);
+
+        // Vertices
+
+        Vertex* vertices;
+
+        //Lock vertex buffer
+        SquareVertexBuffer->Lock(0, 0, (void**)&vertices, 0);
+
+        vertices[0].x = -0.5f;
+        vertices[0].y = 0.5f;
+        vertices[0].z = 0.0f;
+        vertices[0].color = D3DCOLOR_XRGB(255, 0, 0);
+
+        vertices[1].x = 0.5f;
+        vertices[1].y = 0.5f;
+        vertices[1].z = 0.0f;
+        vertices[1].color = D3DCOLOR_XRGB(0, 255, 0);
+
+        vertices[2].x = -0.5f;
+        vertices[2].y = -0.5f;
+        vertices[2].z = 0.0f;
+        vertices[2].color = D3DCOLOR_XRGB(0, 0, 255);
+
+        vertices[3].x = 0.5f;
+        vertices[3].y = -0.5f;
+        vertices[3].z = 0.0f;
+        vertices[3].color = D3DCOLOR_XRGB(255, 0, 0);
+
+        SquareVertexBuffer->Unlock(); //Unlock vertex buffer
+
+        // Indices:
+
+        WORD* indices = 0;
+
+        SquareIndexBuffer->Lock(0, 0, (void**)&indices, 0);
+
+        indices[0] = 0; indices[1] = 1; indices[2] = 2;
+        indices[3] = 2; indices[4] = 1; indices[5] = 3;
+
+        SquareIndexBuffer->Unlock();
+    }
 }

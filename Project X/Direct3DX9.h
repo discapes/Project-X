@@ -6,4 +6,5 @@ namespace DirectX {
 	void cleanUp();
 	int renderScene(float timeDelta);
     int initializeD3D(HWND hwnd); 
+	void initVertices();
 }
