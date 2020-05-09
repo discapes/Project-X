@@ -1,10 +1,9 @@
 #pragma once
 namespace Settings {
 	namespace Window {
-		inline constexpr int width = 800;
-		inline constexpr int height = 600;
-		inline constexpr bool windowed = true;
-		inline constexpr bool isFullScreen = false;
+		inline constexpr int width = 1920;
+		inline constexpr int height = 1080;
+		inline constexpr bool isFullScreen = true;
 	}
 	namespace Keys {
 		inline constexpr UINT exitKey = VK_ESCAPE;

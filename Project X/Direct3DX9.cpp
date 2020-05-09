@@ -86,7 +86,7 @@ namespace DirectX {
         d3dpp.hDeviceWindow = hwnd;
 
         //FullScreen or Windowed
-        d3dpp.Windowed = Settings::Window::windowed;
+        d3dpp.Windowed = !Settings::Window::isFullScreen;
 
         //true lets Direct3D do the depth/stencil buffer automatically
         d3dpp.EnableAutoDepthStencil = true;

@@ -45,19 +45,36 @@ namespace Window {
 		if (!RegisterClassEx(&wc))
 			return 1;
 
-		HWND hwnd = CreateWindowEx(    //Create our Extended Window
-			NULL,    //Extended style
-			WndClassName,    //Name of our windows class
-			"Project X Title",    //Name in the title bar of our window
-			WS_OVERLAPPEDWINDOW,    //style of our window
-			CW_USEDEFAULT, CW_USEDEFAULT,    //Top left corner of window
-			width,    //Width of our window
-			height,    //Height of our window
-			NULL,    //Handle to parent window
-			NULL,    //Handle to a Menu
-			hInstance,    //Specifies instance of current program
-			NULL    //used for an MDI client window
-		);
+		if (Settings::Window::isFullScreen) {
+			hwnd = CreateWindowEx(    //Create our Extended Window
+				NULL,    //Extended style
+				WndClassName,    //Name of our windows class
+				"Project X Title",    //Name in the title bar of our window
+				WS_EX_TOPMOST | WS_POPUP,    //style of our window
+				0, 0,    //Top left corner of window
+				width,    //Width of our window
+				height,    //Height of our window
+				NULL,    //Handle to parent window
+				NULL,    //Handle to a Menu
+				hInstance,    //Specifies instance of current program
+				NULL    //used for an MDI client window
+			);
+		} else {
+			hwnd = CreateWindowEx(    //Create our Extended Window
+				NULL,    //Extended style
+				WndClassName,    //Name of our windows class
+				"Project X Title",    //Name in the title bar of our window
+				WS_OVERLAPPEDWINDOW,    //style of our window
+				CW_USEDEFAULT, CW_USEDEFAULT,    //Top left corner of window
+				width,    //Width of our window
+				height,    //Height of our window
+				NULL,    //Handle to parent window
+				NULL,    //Handle to a Menu
+				hInstance,    //Specifies instance of current program
+				NULL    //used for an MDI client window
+			);
+		}
+
 
 		if (!hwnd)
 			return 2;
