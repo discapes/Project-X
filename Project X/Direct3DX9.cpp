@@ -107,17 +107,18 @@ namespace DirectX {
             
         
         // COMPUTE
-
+        // reset viewAngle
         View::targ.x = View::pos.x;
         View::targ.y = View::pos.y;
         View::targ.z = View::pos.z + .0001f;
-        D3DXMatrixRotationY(&cameraAngleY, angleY);
-        D3DXMatrixRotationX(&cameraAngleX, angleX);
         D3DXMatrixLookAtLH(&View::View, &View::pos, &View::targ, &View::up);
 
+        // set viewAngle
+        D3DXMatrixRotationY(&cameraAngleY, angleY);
+        D3DXMatrixRotationX(&cameraAngleX, angleX);
         cameraAngle = cameraAngleX * cameraAngleY;
-
         View::View *= cameraAngle;
+
         d3dDevice->SetTransform(D3DTS_VIEW, &View::View);
 
 
