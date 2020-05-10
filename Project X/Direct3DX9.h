@@ -4,12 +4,12 @@
 
 namespace DirectX {
 
-	namespace View {
-		extern D3DXVECTOR3 cameraPos;
-		extern D3DXVECTOR3 cameraTarget;
-		extern D3DXVECTOR3 cameraUp;
+	namespace Camera {
+		extern D3DXVECTOR3 pos;
+		extern D3DXVECTOR3 targetAbsPos;
+		extern D3DXVECTOR3 up;
 
-		extern D3DXMATRIX cameraView;
+		extern D3DXMATRIX view;
 
 		extern float angleX;
 		extern float angleY;

@@ -9,16 +9,15 @@
 #include <directxmath.h>
 
 namespace DirectX {
-	using namespace View;
-	namespace View {
-		D3DXVECTOR3 cameraPos(0.0f, 0.0f, -2.0f);
-		D3DXVECTOR3 cameraTarget(0.0f, 0.0f, 0.0f);
-		D3DXVECTOR3 cameraUp(0.0f, 1.0f, 0.0f);
+	namespace Camera {
+		D3DXVECTOR3 pos(0.0f, 0.0f, -2.0f);
+		D3DXVECTOR3 targetAbsPos(0.0f, 0.0f, 0.0f);
+		D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
 
-		D3DXVECTOR4 targetPosRelativeToCamera(0.0f, 0.0f, 0.f, 0);
-		D3DXMATRIX targetAngleFromCamera;
+		D3DXVECTOR4 targetRelPos(0.0f, 0.0f, 0.f, 0);
+		D3DXMATRIX targetAngle;
 
-		D3DXMATRIX cameraView;
+		D3DXMATRIX view;
 
 		float angleX{ 0 };
 		float angleY{ 0 };
@@ -68,74 +67,77 @@ namespace DirectX {
 
 	int renderScene(float timeDelta)    //Renders a single frame
 	{
-		// KEYBOARD INPUTS
-		if (GetAsyncKeyState(0x57)) // W
-			cameraPos.z += timeDelta * 1000.f;
-		if (GetAsyncKeyState(0x53)) // S
-			cameraPos.z -= timeDelta * 1000.f;
-		if (GetAsyncKeyState(0x44)) // D
-			cameraPos.x += timeDelta * 1000.f;
-		if (GetAsyncKeyState(0x41)) // A
-			cameraPos.x -= timeDelta * 1000.f;
-		if (GetAsyncKeyState(VK_LSHIFT)) // Left Shift
-			cameraPos.y += timeDelta * 1000.f;
-		if (GetAsyncKeyState(VK_LCONTROL)) // Left Control
-			cameraPos.y -= timeDelta * 1000.f;
-
-		if (GetAsyncKeyState(VK_UP)) // UP
-			angleX -= timeDelta * 1000.f;
-		if (GetAsyncKeyState(VK_DOWN)) // DOWN
-			angleX += timeDelta * 1000.f;
-		if (GetAsyncKeyState(VK_RIGHT)) // RIGHT
-			angleY += timeDelta * 1000.f;
-		if (GetAsyncKeyState(VK_LEFT)) // LEFT
-			angleY -= timeDelta * 1000.f;
-
-		if (GetAsyncKeyState(VK_RETURN)) { // ENTER
-			cameraPos = { 0.0f, 0.0f, -2.0f };
-			cameraTarget = { 0.0f, 0.0f, 0.0f };
-			cameraUp = { 0.0f, 1.0f, 0.0f };
-			angleY = 0;
-			angleX = 0;
-		}
-
+		// MENU TOGGLE
 		static bool prevState = false;
 		if (((bool)GetAsyncKeyState(VK_INSERT) == true) && (prevState == false))
 			Menu::isOpen = !Menu::isOpen;
 		prevState = GetAsyncKeyState(VK_INSERT);
 
+		// GET ANGLES
+		if (GetAsyncKeyState(VK_UP)) // UP
+			Camera::angleX -= timeDelta * 1000.f;
+		if (GetAsyncKeyState(VK_DOWN)) // DOWN
+			Camera::angleX += timeDelta * 1000.f;
+		if (GetAsyncKeyState(VK_RIGHT)) // RIGHT
+			Camera::angleY += timeDelta * 1000.f;
+		if (GetAsyncKeyState(VK_LEFT)) // LEFT
+			Camera::angleY -= timeDelta * 1000.f;
+
+		if (GetAsyncKeyState(VK_RETURN)) { // ENTER
+			Camera::pos = { 0.0f, 0.0f, -2.0f };
+			Camera::angleY = 0;
+			Camera::angleX = 0;
+		}
+
+		// NORMALIZE ANGLES
+		if (Camera::angleY >= 6.28f)
+			Camera::angleY = 0.0f;
+
+		if (Camera::angleX >= 6.28f)
+			Camera::angleX = 0.0f;
+
+		if (Camera::angleY <= -6.28f)
+			Camera::angleY = 0.0f;
+
+		if (Camera::angleX <= -6.28f)
+			Camera::angleX = 0.0f;
 
 
-		// NORMALIZE
-		if (angleY >= 6.28f)
-			angleY = 0.0f;
 
-		if (angleX >= 6.28f)
-			angleX = 0.0f;
+		// CAMERA MOVEMENT AND ANGLE
+		D3DXMatrixRotationYawPitchRoll(&Camera::targetAngle, Camera::angleY, Camera::angleX, 0);		// get the target angle from camera
+		D3DXVec3Transform(&Camera::targetRelPos, &D3DXVECTOR3(0.0f, 0.0f, 1.f), &Camera::targetAngle);	// get the target position from camera
 
-		if (angleY <= -6.28f)
-			angleY = 0.0f;
+		{ // MOVEMENT
+			if (GetAsyncKeyState(0x57)) { // W
+				Camera::pos.x += Camera::targetRelPos.x * timeDelta * 1000.f;
+				Camera::pos.y += Camera::targetRelPos.y * timeDelta * 1000.f;
+				Camera::pos.z += Camera::targetRelPos.z * timeDelta * 1000.f;
+			}
+			if (GetAsyncKeyState(0x53)) { // S
+				Camera::pos.x -= Camera::targetRelPos.x * timeDelta * 1000.f;
+				Camera::pos.y -= Camera::targetRelPos.y * timeDelta * 1000.f;
+				Camera::pos.z -= Camera::targetRelPos.z * timeDelta * 1000.f;
+			}
+			if (GetAsyncKeyState(0x44)) // D
+				Camera::pos.x += timeDelta * 1000.f;
+			if (GetAsyncKeyState(0x41)) // A
+				Camera::pos.x -= timeDelta * 1000.f;
+			if (GetAsyncKeyState(VK_LSHIFT)) // Left Shift
+				Camera::pos.y += timeDelta * 1000.f;
+			if (GetAsyncKeyState(VK_LCONTROL)) // Left Control
+				Camera::pos.y -= timeDelta * 1000.f;
+		}
 
-		if (angleX <= -6.28f)
-			angleX = 0.0f;
+		{ // ANGLE
+			Camera::targetAbsPos.x = Camera::pos.x + Camera::targetRelPos.x;
+			Camera::targetAbsPos.y = Camera::pos.y + Camera::targetRelPos.y;	// get the absolute position of target
+			Camera::targetAbsPos.z = Camera::pos.z + Camera::targetRelPos.z;
+		}
 
-
-
-		// COMPUTE
-
-		D3DXMatrixRotationYawPitchRoll(&targetAngleFromCamera, angleY, angleX, 0);		// get the target angle from camera
-		D3DXVec3Transform(&targetPosRelativeToCamera, &D3DXVECTOR3(0.0f, 0.0f, 1.f), &targetAngleFromCamera);	// get the target position from camera
-
-		cameraTarget.x = cameraPos.x + targetPosRelativeToCamera.x;
-		cameraTarget.y = cameraPos.y + targetPosRelativeToCamera.y;	// get the absolute position of target
-		cameraTarget.z = cameraPos.z + targetPosRelativeToCamera.z; 
-
-		D3DXMatrixLookAtLH(&cameraView, &cameraPos, &cameraTarget, &cameraUp); // get cameraView
-
-		d3dDevice->SetTransform(D3DTS_VIEW, &cameraView); // set D3DTS_VIEW to cameraView
-
-
-
+		// SET VIEW
+		D3DXMatrixLookAtLH(&Camera::view, &Camera::pos, &Camera::targetAbsPos, &Camera::up); // get view
+		d3dDevice->SetTransform(D3DTS_VIEW, &Camera::view); // set D3DTS_VIEW to view
 
 
 
@@ -143,7 +145,6 @@ namespace DirectX {
 		d3dDevice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00000000, 1.0f, 0);
 		//Start drawing our scene
 		d3dDevice->BeginScene();
-
 
 
 
@@ -163,7 +164,6 @@ namespace DirectX {
 			ImGui::Render();
 			ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 		}
-
 
 
 
