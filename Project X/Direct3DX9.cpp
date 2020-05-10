@@ -34,8 +34,6 @@ namespace DirectX {
         //d3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
         initVertices();
 
-        D3DXMatrixLookAtLH(&View::View, &View::pos, &View::targ, &View::up);
-
         D3DXMATRIX proj;
         D3DXMatrixPerspectiveFovLH(
             &proj,
@@ -94,7 +92,6 @@ namespace DirectX {
             angleY -= timeDelta * 1000.f;
         if (GetAsyncKeyState(VK_LEFT)) // LEFT
             angleY += timeDelta * 1000.f;
-       // D3DXMatrixRotationY(&cameraAngleY, timeDelta * 1000.f);
 
 
 
@@ -108,22 +105,19 @@ namespace DirectX {
         //    x = 0.0f;
 
             
-
+        
         // COMPUTE
 
         View::targ.x = View::pos.x;
         View::targ.y = View::pos.y;
-        View::targ.z = View::pos.z + .00001f;
-        
+        View::targ.z = View::pos.z + .0001f;
         D3DXMatrixRotationY(&cameraAngleY, angleY);
         D3DXMatrixRotationX(&cameraAngleX, angleX);
-        angleY = 0;
-        angleX = 0;
+        D3DXMatrixLookAtLH(&View::View, &View::pos, &View::targ, &View::up);
 
         cameraAngle = cameraAngleX * cameraAngleY;
 
         View::View *= cameraAngle;
-
         d3dDevice->SetTransform(D3DTS_VIEW, &View::View);
 
 
