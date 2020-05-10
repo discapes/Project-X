@@ -154,10 +154,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Crosshair.cpp" />
     <ClCompile Include="Direct3DX9.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Crosshair.h" />
     <ClInclude Include="Direct3DX9.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="Window.h" />
