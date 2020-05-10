@@ -5,15 +5,14 @@
 namespace DirectX {
 
 	namespace View {
-		extern D3DXVECTOR3 pos;
-		extern D3DXVECTOR3 targ;
-		extern D3DXVECTOR3 up;
+		extern D3DXVECTOR3 cameraPos;
+		extern D3DXVECTOR3 cameraTarget;
+		extern D3DXVECTOR3 cameraUp;
 
-		extern D3DXMATRIX View;
+		extern D3DXMATRIX cameraView;
 
 		extern float angleX;
 		extern float angleY;
-		extern D3DXMATRIX cameraAngleX, cameraAngleY, cameraAngle;
 	}
 
     //Vertex structure

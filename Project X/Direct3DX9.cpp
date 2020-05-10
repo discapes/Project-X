@@ -9,19 +9,19 @@
 #include <directxmath.h>
 
 namespace DirectX {
+	using namespace View;
 	namespace View {
-		D3DXVECTOR3 pos(0.0f, 0.0f, -2.0f);
-		D3DXVECTOR3 targ(0.0f, 0.0f, 0.0f);
-		D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
+		D3DXVECTOR3 cameraPos(0.0f, 0.0f, -2.0f);
+		D3DXVECTOR3 cameraTarget(0.0f, 0.0f, 0.0f);
+		D3DXVECTOR3 cameraUp(0.0f, 1.0f, 0.0f);
 
-		D3DXVECTOR3 def(0.0f, 0.0f, 1.f);
-		D3DXVECTOR4 out(0.0f, 0.0f, 0.f, 0.f);
+		D3DXVECTOR4 targetPosRelativeToCamera(0.0f, 0.0f, 0.f, 0);
+		D3DXMATRIX targetAngleFromCamera;
 
-		D3DXMATRIX View;
+		D3DXMATRIX cameraView;
 
 		float angleX{ 0 };
 		float angleY{ 0 };
-		D3DXMATRIX cameraAngleX, cameraAngleY, cameraAngle;
 	}
 
 	IDirect3D9* d3d9 = NULL;
@@ -70,35 +70,33 @@ namespace DirectX {
 	{
 		// KEYBOARD INPUTS
 		if (GetAsyncKeyState(0x57)) // W
-			View::pos.z += timeDelta * 1000.f;
+			cameraPos.z += timeDelta * 1000.f;
 		if (GetAsyncKeyState(0x53)) // S
-			View::pos.z -= timeDelta * 1000.f;
-
+			cameraPos.z -= timeDelta * 1000.f;
 		if (GetAsyncKeyState(0x44)) // D
-			View::pos.x += timeDelta * 1000.f;
+			cameraPos.x += timeDelta * 1000.f;
 		if (GetAsyncKeyState(0x41)) // A
-			View::pos.x -= timeDelta * 1000.f;
-
+			cameraPos.x -= timeDelta * 1000.f;
 		if (GetAsyncKeyState(VK_LSHIFT)) // Left Shift
-			View::pos.y += timeDelta * 1000.f;
+			cameraPos.y += timeDelta * 1000.f;
 		if (GetAsyncKeyState(VK_LCONTROL)) // Left Control
-			View::pos.y -= timeDelta * 1000.f;
+			cameraPos.y -= timeDelta * 1000.f;
 
 		if (GetAsyncKeyState(VK_UP)) // UP
-			View::angleX -= timeDelta * 1000.f;
+			angleX -= timeDelta * 1000.f;
 		if (GetAsyncKeyState(VK_DOWN)) // DOWN
-			View::angleX += timeDelta * 1000.f;
+			angleX += timeDelta * 1000.f;
 		if (GetAsyncKeyState(VK_RIGHT)) // RIGHT
-			View::angleY += timeDelta * 1000.f;
+			angleY += timeDelta * 1000.f;
 		if (GetAsyncKeyState(VK_LEFT)) // LEFT
-			View::angleY -= timeDelta * 1000.f;
+			angleY -= timeDelta * 1000.f;
 
 		if (GetAsyncKeyState(VK_RETURN)) { // ENTER
-			View::pos = { 0.0f, 0.0f, -2.0f };
-			View::targ = { 0.0f, 0.0f, 0.0f };
-			View::up = { 0.0f, 1.0f, 0.0f };
-			View::angleY = 0;
-			View::angleX = 0;
+			cameraPos = { 0.0f, 0.0f, -2.0f };
+			cameraTarget = { 0.0f, 0.0f, 0.0f };
+			cameraUp = { 0.0f, 1.0f, 0.0f };
+			angleY = 0;
+			angleX = 0;
 		}
 
 		static bool prevState = false;
@@ -107,44 +105,47 @@ namespace DirectX {
 		prevState = GetAsyncKeyState(VK_INSERT);
 
 
+
 		// NORMALIZE
-		if (View::angleY >= 6.28f)
-			View::angleY = 0.0f;
+		if (angleY >= 6.28f)
+			angleY = 0.0f;
 
-		if (View::angleX >= 6.28f)
-			View::angleX = 0.0f;
+		if (angleX >= 6.28f)
+			angleX = 0.0f;
 
-		if (View::angleY <= -6.28f)
-			View::angleY = 0.0f;
+		if (angleY <= -6.28f)
+			angleY = 0.0f;
 
-		if (View::angleX <= -6.28f)
-			View::angleX = 0.0f;
+		if (angleX <= -6.28f)
+			angleX = 0.0f;
 
 
 
 		// COMPUTE
-		// reset viewAngle
 
-		D3DXMatrixRotationYawPitchRoll(&View::cameraAngle, View::angleY, View::angleX, 0);
-		D3DXVec3Transform(&View::out, &View::def, &View::cameraAngle);
+		D3DXMatrixRotationYawPitchRoll(&targetAngleFromCamera, angleY, angleX, 0);		// get the target angle from camera
+		D3DXVec3Transform(&targetPosRelativeToCamera, &D3DXVECTOR3(0.0f, 0.0f, 1.f), &targetAngleFromCamera);	// get the target position from camera
 
-		View::targ.x = View::pos.x + View::out.x;
-		View::targ.y = View::pos.y + View::out.y;
-		View::targ.z = View::pos.z + View::out.z;
+		cameraTarget.x = cameraPos.x + targetPosRelativeToCamera.x;
+		cameraTarget.y = cameraPos.y + targetPosRelativeToCamera.y;	// get the absolute position of target
+		cameraTarget.z = cameraPos.z + targetPosRelativeToCamera.z; 
 
-		D3DXMatrixLookAtLH(&View::View, &View::pos, &View::targ, &View::up);
-		//// set viewAngle
+		D3DXMatrixLookAtLH(&cameraView, &cameraPos, &cameraTarget, &cameraUp); // get cameraView
 
-		//View::View *= View::cameraAngle;
+		d3dDevice->SetTransform(D3DTS_VIEW, &cameraView); // set D3DTS_VIEW to cameraView
 
-		d3dDevice->SetTransform(D3DTS_VIEW, &View::View);
 
-		Crosshair::move(View::pos, View::out);
+
+
+
 
 		//Clear the window to 0x00000000 (black) 0x00000055 (dark blue
 		d3dDevice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00000000, 1.0f, 0);
 		//Start drawing our scene
 		d3dDevice->BeginScene();
+
+
+
 
 		// DRAW
 		d3dDevice->SetStreamSource(0, SquareVertexBuffer, 0, sizeof(Vertex));
@@ -162,6 +163,9 @@ namespace DirectX {
 			ImGui::Render();
 			ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 		}
+
+
+
 
 		//Stop drawing our scene
 		d3dDevice->EndScene();
