@@ -3,6 +3,10 @@
 #include "Direct3DX9.h"
 #include "Settings.h"
 #include <ctime>
+#include "imgui/imgui_impl_win32.h"
+IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+#include "Menu.h"
+
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
 	{
@@ -136,6 +140,27 @@ namespace Window {
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			return 0;
+		}
+		if (Menu::isOpen) {
+			ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam);
+			// so clicks dont register to CSGO
+			if ((!GetAsyncKeyState(VK_XBUTTON2)) && (msg == WM_LBUTTONDOWN
+				|| msg == WM_LBUTTONUP
+				|| msg == WM_LBUTTONDBLCLK
+
+				|| msg == WM_MBUTTONDOWN
+				|| msg == WM_MBUTTONUP
+				|| msg == WM_MBUTTONDBLCLK
+
+				|| msg == WM_RBUTTONDOWN
+				|| msg == WM_RBUTTONUP
+				|| msg == WM_RBUTTONDBLCLK
+
+				|| msg == WM_XBUTTONDOWN
+				|| msg == WM_XBUTTONUP
+				|| msg == WM_XBUTTONDBLCLK
+				|| ((msg == WM_MOUSEMOVE) && (wParam != 0)))
+				) return 0;
 		}
 		return DefWindowProc(hwnd, msg, wParam, lParam);
 	}

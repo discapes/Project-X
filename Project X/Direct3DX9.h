@@ -1,7 +1,20 @@
 #pragma once
 #include <d3d9.h>
+#include <d3dx9math.h>
 
 namespace DirectX {
+
+	namespace View {
+		extern D3DXVECTOR3 pos;
+		extern D3DXVECTOR3 targ;
+		extern D3DXVECTOR3 up;
+
+		extern D3DXMATRIX View;
+
+		extern float angleX;
+		extern float angleY;
+		extern D3DXMATRIX cameraAngleX, cameraAngleY, cameraAngle;
+	}
 
     //Vertex structure
     struct Vertex {

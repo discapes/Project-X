@@ -3,6 +3,9 @@
 #include "Direct3DX9.h"
 #include "Settings.h"
 #include "Crosshair.h"
+#include "Menu.h"
+#include "imgui/imgui_impl_win32.h"
+#include "Window.h"
 
 namespace DirectX {
 	namespace View {
@@ -28,6 +31,8 @@ namespace DirectX {
 	//
 
 	int setupScene() {
+		Menu::init(d3dDevice, Window::hwnd);
+
 		d3dDevice->SetRenderState(D3DRS_LIGHTING, false);
 		//d3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 		initVertices();
@@ -92,6 +97,10 @@ namespace DirectX {
 			View::angleX = 0;
 		}
 
+		static bool prevState = false;
+		if (((bool)GetAsyncKeyState(VK_INSERT) == true) && (prevState == false))
+			Menu::isOpen = !Menu::isOpen;
+		prevState = GetAsyncKeyState(VK_INSERT);
 
 
 		// NORMALIZE
@@ -110,7 +119,7 @@ namespace DirectX {
 		View::targ.z = View::pos.z + 1.f;
 		D3DXMatrixLookAtLH(&View::View, &View::pos, &View::targ, &View::up);
 
-		// set viewAngle
+		//// set viewAngle
 		D3DXMatrixRotationYawPitchRoll(&View::cameraAngle, View::angleY, View::angleX, 0);
 		View::View *= View::cameraAngle;
 
@@ -123,8 +132,6 @@ namespace DirectX {
 		//Start drawing our scene
 		d3dDevice->BeginScene();
 
-
-
 		// DRAW
 		d3dDevice->SetStreamSource(0, SquareVertexBuffer, 0, sizeof(Vertex));
 		d3dDevice->SetIndices(SquareIndexBuffer);
@@ -132,6 +139,15 @@ namespace DirectX {
 
 		d3dDevice->SetStreamSource(0, Crosshair::VertexBuffer, 0, sizeof(Vertex));
 		d3dDevice->DrawPrimitive(D3DPT_LINELIST, 0, Crosshair::VertexCount);
+
+		if (Menu::isOpen) {
+			ImGui_ImplDX9_NewFrame();
+			ImGui_ImplWin32_NewFrame();
+			ImGui::NewFrame();
+			Menu::render();
+			ImGui::Render();
+			ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
+		}
 
 		//Stop drawing our scene
 		d3dDevice->EndScene();
