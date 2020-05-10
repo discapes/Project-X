@@ -6,12 +6,16 @@
 #include "Menu.h"
 #include "imgui/imgui_impl_win32.h"
 #include "Window.h"
+#include <directxmath.h>
 
 namespace DirectX {
 	namespace View {
 		D3DXVECTOR3 pos(0.0f, 0.0f, -2.0f);
 		D3DXVECTOR3 targ(0.0f, 0.0f, 0.0f);
 		D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
+
+		D3DXVECTOR3 def(0.0f, 0.0f, 1.f);
+		D3DXVECTOR4 out(0.0f, 0.0f, 0.f, 0.f);
 
 		D3DXMATRIX View;
 
@@ -81,13 +85,13 @@ namespace DirectX {
 			View::pos.y -= timeDelta * 1000.f;
 
 		if (GetAsyncKeyState(VK_UP)) // UP
-			View::angleX += timeDelta * 1000.f;
-		if (GetAsyncKeyState(VK_DOWN)) // DOWN
 			View::angleX -= timeDelta * 1000.f;
+		if (GetAsyncKeyState(VK_DOWN)) // DOWN
+			View::angleX += timeDelta * 1000.f;
 		if (GetAsyncKeyState(VK_RIGHT)) // RIGHT
-			View::angleY -= timeDelta * 1000.f;
-		if (GetAsyncKeyState(VK_LEFT)) // LEFT
 			View::angleY += timeDelta * 1000.f;
+		if (GetAsyncKeyState(VK_LEFT)) // LEFT
+			View::angleY -= timeDelta * 1000.f;
 
 		if (GetAsyncKeyState(VK_RETURN)) { // ENTER
 			View::pos = { 0.0f, 0.0f, -2.0f };
@@ -104,28 +108,38 @@ namespace DirectX {
 
 
 		// NORMALIZE
-		//if (y >= 6.28f)
-		//    y = 0.0f;
+		if (View::angleY >= 6.28f)
+			View::angleY = 0.0f;
 
-		//if (x >= 6.28f)
-		//    x = 0.0f;
+		if (View::angleX >= 6.28f)
+			View::angleX = 0.0f;
+
+		if (View::angleY <= -6.28f)
+			View::angleY = 0.0f;
+
+		if (View::angleX <= -6.28f)
+			View::angleX = 0.0f;
 
 
 
 		// COMPUTE
 		// reset viewAngle
-		View::targ.x = View::pos.x;
-		View::targ.y = View::pos.y;
-		View::targ.z = View::pos.z + 1.f;
-		D3DXMatrixLookAtLH(&View::View, &View::pos, &View::targ, &View::up);
 
-		//// set viewAngle
 		D3DXMatrixRotationYawPitchRoll(&View::cameraAngle, View::angleY, View::angleX, 0);
-		View::View *= View::cameraAngle;
+		D3DXVec3Transform(&View::out, &View::def, &View::cameraAngle);
+
+		View::targ.x = View::pos.x + View::out.x;
+		View::targ.y = View::pos.y + View::out.y;
+		View::targ.z = View::pos.z + View::out.z;
+
+		D3DXMatrixLookAtLH(&View::View, &View::pos, &View::targ, &View::up);
+		//// set viewAngle
+
+		//View::View *= View::cameraAngle;
 
 		d3dDevice->SetTransform(D3DTS_VIEW, &View::View);
 
-		Crosshair::move(View::pos);
+		Crosshair::move(View::pos, View::out);
 
 		//Clear the window to 0x00000000 (black) 0x00000055 (dark blue
 		d3dDevice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00000000, 1.0f, 0);
