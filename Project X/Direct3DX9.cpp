@@ -15,6 +15,8 @@ namespace DirectX {
 	IDirect3D9* d3d9 = NULL;
 	IDirect3DDevice9* d3dDevice = NULL;
 	IDirect3DVertexDeclaration9* myVertexDecl;
+	D3DMATERIAL9 white;    //Pointer to store material
+	D3DLIGHT9 light;    //Pointer to store light
 
 	int setupScene() {
 
@@ -22,6 +24,7 @@ namespace DirectX {
 		D3DVERTEXELEMENT9 simple_decl[] = { {0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
 		{0, 12, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0},
 		{0, 20, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0},
+		{0, 24, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_NORMAL, 0},
 		D3DDECL_END() };
 
 		// d3dDevice is your LPDIRECT3DDEVICE9
@@ -34,18 +37,36 @@ namespace DirectX {
 		// Set all your stream sources, and DrawIndexedPrimitive()
 
 
+		//Create the light
+		ZeroMemory(&light, sizeof(light));
+		light.Type = D3DLIGHT_DIRECTIONAL;
+		light.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		light.Ambient = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f) * 0.2f;
+		light.Specular = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f) * 0.1f;
+		light.Direction = D3DXVECTOR3(1.0f, 0.0f, 0.7f);
 
+		//Create the material
+		ZeroMemory(&white, sizeof(white));
+		white.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		white.Ambient = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		white.Specular = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		white.Emissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
+		white.Power = 5.0f;
 
 
 		Menu::init(d3dDevice, Window::hwnd);
 
-		d3dDevice->SetRenderState(D3DRS_LIGHTING, false);
-		//d3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+		//Renormalize Normals
+		d3dDevice->SetRenderState(D3DRS_NORMALIZENORMALS, true);
+		d3dDevice->SetRenderState(D3DRS_LIGHTING, true);    //Enable Lighting
+		d3dDevice->SetLight(0, &light);    //Set the light
+		d3dDevice->LightEnable(0, true); //Enable the light
 		d3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+		//d3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 
-		//TODO
-		d3dDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-		d3dDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+		d3dDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC); 
+		d3dDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC); 
+		d3dDevice->SetSamplerState(0, D3DSAMP_MAXANISOTROPY, Settings::D3D::anisotrophicFilteringLevel);
 		d3dDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 
 		initVertices();
@@ -236,7 +257,7 @@ namespace DirectX {
 
 		Crosshair::init(d3dDevice);
 		
-		Cube::init(d3dDevice, { 0.f, 0.f, 2.f });
+		Cube::init(d3dDevice, { 0.f, 0.f, 4.f });
 
 	}
 }

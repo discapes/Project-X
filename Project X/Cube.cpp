@@ -8,99 +8,99 @@ namespace Cube {
 	IDirect3DTexture9* Texture;
 
 	void init(IDirect3DDevice9* d3dDevice, D3DXVECTOR3 pos) {
-        void* pVoid;
+		void* pVoid;
 
-        d3dDevice->CreateVertexBuffer(
-            VertexCount * sizeof(DirectX::Vertex),
-            D3DUSAGE_WRITEONLY,
-            0,
-            D3DPOOL_MANAGED,
-            &VertexBuffer,
-            0);
+		d3dDevice->CreateVertexBuffer(
+			VertexCount * sizeof(DirectX::Vertex),
+			D3DUSAGE_WRITEONLY,
+			0,
+			D3DPOOL_MANAGED,
+			&VertexBuffer,
+			0);
 
-        DirectX::Vertex Vertices[] =
-        {
+		DirectX::Vertex Vertices[] =
+		{
 
-            //front face
-            { 1.0f,-1.0f,-1.0f, 1.0f, 1.0f},
-            {-1.0f,-1.0f,-1.0f, 0.0f, 1.0f},
-            {-1.0f, 1.0f,-1.0f, 0.0f, 0.0f},
+			//front face
+			{ 1.0f,-1.0f,-1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f},
+			{-1.0f,-1.0f,-1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f},
+			{-1.0f, 1.0f,-1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f},
 
-            { 1.0f,-1.0f,-1.0f, 1.0f, 1.0f},
-            {-1.0f, 1.0f,-1.0f, 0.0f, 0.0f},
-            { 1.0f, 1.0f,-1.0f, 1.0f, 0.0f},
+			{ 1.0f,-1.0f,-1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f},
+			{-1.0f, 1.0f,-1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f},
+			{ 1.0f, 1.0f,-1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f},
 
-            //right side
-            { 1.0f,-1.0f, 1.0f, 1.0f, 1.0f},
-            { 1.0f,-1.0f,-1.0f, 0.0f, 1.0f},
-            { 1.0f, 1.0f,-1.0f, 0.0f, 0.0f},
+			//right side
+			{ 1.0f,-1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f},
+			{ 1.0f,-1.0f,-1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f},
+			{ 1.0f, 1.0f,-1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f},
 
-            { 1.0f,-1.0f, 1.0f, 1.0f, 1.0f},
-            { 1.0f, 1.0f,-1.0f, 0.0f, 0.0f},
-            { 1.0f, 1.0f, 1.0f, 1.0f, 0.0f},
+			{ 1.0f,-1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f},
+			{ 1.0f, 1.0f,-1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f},
+			{ 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f},
 
-            //left side
-            {-1.0f,-1.0f,-1.0f, 1.0f, 1.0f},
-            {-1.0f,-1.0f, 1.0f, 0.0f, 1.0f},
-            {-1.0f, 1.0f, 1.0f, 0.0f, 0.0f},
+			//left side
+			{-1.0f,-1.0f,-1.0f,-1.0f, 0.0f, 0.0f, 1.0f, 1.0f},
+			{-1.0f,-1.0f, 1.0f,-1.0f, 0.0f, 0.0f, 0.0f, 1.0f},
+			{-1.0f, 1.0f, 1.0f,-1.0f, 0.0f, 0.0f, 0.0f, 0.0f},
 
-            {-1.0f,-1.0f,-1.0f, 1.0f, 1.0f},
-            {-1.0f, 1.0f, 1.0f, 0.0f, 0.0f},
-            {-1.0f, 1.0f,-1.0f, 1.0f, 0.0f},
+			{-1.0f,-1.0f,-1.0f,-1.0f, 0.0f, 0.0f, 1.0f, 1.0f},
+			{-1.0f, 1.0f, 1.0f,-1.0f, 0.0f, 0.0f, 0.0f, 0.0f},
+			{-1.0f, 1.0f,-1.0f,-1.0f, 0.0f, 0.0f, 1.0f, 0.0f},
 
-            //back side
-            {-1.0f,-1.0f, 1.0f, 1.0f, 1.0f},
-            { 1.0f,-1.0f, 1.0f, 0.0f, 1.0f},
-            { 1.0f, 1.0f, 1.0f, 0.0f, 0.0f},
+			//back side
+			{-1.0f,-1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f},
+			{ 1.0f,-1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f},
+			{ 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f},
 
-            {-1.0f,-1.0f, 1.0f, 1.0f, 1.0f},
-            { 1.0f, 1.0f, 1.0f, 0.0f, 0.0f},
-            {-1.0f, 1.0f, 1.0f, 1.0f, 0.0f},
+			{-1.0f,-1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f},
+			{ 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f},
+			{-1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f},
 
-            //top side
-            { 1.0f, 1.0f,-1.0f, 1.0f, 1.0f},
-            {-1.0f, 1.0f,-1.0f, 0.0f, 1.0f},
-            {-1.0f, 1.0f, 1.0f, 0.0f, 0.0f},
+			//top side
+			{ 1.0f, 1.0f,-1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f},
+			{-1.0f, 1.0f,-1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f},
+			{-1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f},
 
-            { 1.0f, 1.0f,-1.0f, 1.0f, 1.0f},
-            {-1.0f, 1.0f, 1.0f, 0.0f, 0.0f},
-            { 1.0f, 1.0f, 1.0f, 1.0f, 0.0f},
+			{ 1.0f, 1.0f,-1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f},
+			{-1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f},
+			{ 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f},
 
-            //bottom side
-            { 1.0f,-1.0f, 1.0f, 1.0f, 1.0f},
-            {-1.0f,-1.0f, 1.0f, 0.0f, 1.0f},
-            {-1.0f,-1.0f,-1.0f, 0.0f, 0.0f},
+			//bottom side
+			{ 1.0f,-1.0f, 1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f},
+			{-1.0f,-1.0f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f},
+			{-1.0f,-1.0f,-1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f},
 
-            { 1.0f,-1.0f, 1.0f, 1.0f, 1.0f},
-            {-1.0f,-1.0f,-1.0f, 0.0f, 0.0f},
-            { 1.0f,-1.0f,-1.0f, 1.0f, 0.0f},
-        };
+			{ 1.0f,-1.0f, 1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f},
+			{-1.0f,-1.0f,-1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f},
+			{ 1.0f,-1.0f,-1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f},
+		};
 
-        VertexBuffer->Lock(0, 0, (void**)&pVoid, 0);
+		VertexBuffer->Lock(0, 0, (void**)&pVoid, 0);
 
-        for (int i = 0; i < 36; i++) {
-            Vertices[i] += pos;
-        }
+		for (int i = 0; i < 36; i++) {
+			Vertices[i] += pos;
+		}
 
-        //copy the squarevertices[] array into the vertex buffer
-        memcpy(pVoid, Vertices, sizeof(Vertices));
+		//copy the squarevertices[] array into the vertex buffer
+		memcpy(pVoid, Vertices, sizeof(Vertices));
 
-        VertexBuffer->Unlock();
+		VertexBuffer->Unlock();
 
-        D3DXCreateTextureFromFile( // Create texture.
-            d3dDevice,
-            "C:\\Users\\Miika\\source\\repos\\Project X\\x64\\Release\\braynzar.png",
-            &Texture);
+		D3DXCreateTextureFromFile( // Create texture.
+			d3dDevice,
+			"C:\\Users\\Miika\\source\\repos\\Project X\\x64\\Release\\braynzar.png",
+			&Texture);
 
 		// Indices:
-        //TODO
-        //d3dDevice->CreateIndexBuffer(
-        //    IndexCount * sizeof(WORD),
-        //    D3DUSAGE_WRITEONLY,
-        //    D3DFMT_INDEX16,
-        //    D3DPOOL_MANAGED,
-        //    &IndexBuffer,
-        //    0);
+		//TODO
+		//d3dDevice->CreateIndexBuffer(
+		//    IndexCount * sizeof(WORD),
+		//    D3DUSAGE_WRITEONLY,
+		//    D3DFMT_INDEX16,
+		//    D3DPOOL_MANAGED,
+		//    &IndexBuffer,
+		//    0);
 
 		//WORD* indices = 0;
 
@@ -114,7 +114,7 @@ namespace Cube {
 
 	void cleanUp() {
 		VertexBuffer->Release();
-        Texture->Release();
+		Texture->Release();
 		//IndexBuffer->Release();
 	}
 

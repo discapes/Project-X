@@ -12,5 +12,6 @@ namespace Settings {
 	namespace D3D {
 		inline constexpr float fov = D3DX_PI * 0.5f; // D3DX_PI * 0.5f
 		inline constexpr D3DDEVTYPE deviceType = D3DDEVTYPE_HAL;
+		inline constexpr int anisotrophicFilteringLevel = 8;
 	}
 }
