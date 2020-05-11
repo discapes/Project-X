@@ -154,6 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Crosshair.cpp" />
     <ClCompile Include="Direct3DX9.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -166,6 +167,7 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Crosshair.h" />
     <ClInclude Include="Direct3DX9.h" />
     <ClInclude Include="imgui\imconfig.h" />
