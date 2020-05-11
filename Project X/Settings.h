@@ -10,7 +10,7 @@ namespace Settings {
 		inline constexpr UINT exitKey = VK_ESCAPE;
 	}
 	namespace D3D {
-		//TODO fix
+		inline constexpr float fov = D3DX_PI * 0.5f; // D3DX_PI * 0.5f
 		inline constexpr D3DDEVTYPE deviceType = D3DDEVTYPE_HAL;
 	}
 }

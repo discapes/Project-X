@@ -7,4 +7,5 @@ namespace Crosshair {
 
 	void init(IDirect3DDevice9* d3dDevice);
 	void move(DirectX::Vertex pos);
+	void cleanUp();
 }

@@ -76,4 +76,8 @@ namespace Crosshair {
 
 		VertexBuffer->Unlock();
 	}
+	void cleanUp() {
+		VertexBuffer->Release();
+		return;
+	}
 }

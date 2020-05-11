@@ -2,9 +2,9 @@
 #include "Camera.h"
 
 namespace Camera {
-	D3DXVECTOR3 pos(0.0f, 0.0f, -2.0f);
+	D3DXVECTOR3 pos(0.0f, 0.0f, 0.0f);
 	D3DXVECTOR3 targetAbsPos(0.0f, 0.0f, 0.0f);
-	D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
+	D3DXVECTOR4 up(0.0f, 1.0f, 0.0f, 0);
 
 	D3DXVECTOR4 targetRelPos(0.0f, 0.0f, 0.f, 0);
 	D3DXVECTOR4 targetRelPosRight(0.0f, 0.0f, 0.f, 0);
@@ -16,8 +16,13 @@ namespace Camera {
 
 	D3DXMATRIX rightAngle;
 	D3DXMATRIX upAngle;
-
-
+	 
+	D3DXVECTOR4 VECTOR4(D3DXVECTOR3 &VECTOR3) {
+		return D3DXVECTOR4(VECTOR3.x, VECTOR3.y, VECTOR3.z, 0);
+	}
+	D3DXVECTOR3 VECTOR3(D3DXVECTOR4& VECTOR4) {
+		return D3DXVECTOR3(VECTOR4.x, VECTOR4.y, VECTOR4.z);
+	}
 
 	D3DXMATRIX view;
 
@@ -36,7 +41,7 @@ namespace Camera {
 			Camera::angleY -= timeDelta * 1000.f;
 
 		if (GetAsyncKeyState(VK_RETURN)) { // ENTER
-			Camera::pos = { 0.0f, 0.0f, -2.0f };
+			Camera::pos = { 0.0f, 0.0f, 0.f };
 			Camera::angleY = 0;
 			Camera::angleX = 0;
 		}
@@ -58,6 +63,7 @@ namespace Camera {
 		D3DXMatrixRotationYawPitchRoll(&Camera::targetAngle, Camera::angleY, Camera::angleX, 0);		// get the target angle from camera
 		Camera::targetRightAngle = Camera::targetAngle * Camera::rightAngle;
 		D3DXVec3Transform(&Camera::targetRelPos, &D3DXVECTOR3(0.0f, 0.0f, 1.f), &Camera::targetAngle);	// get the target position from camera
+		D3DXVec3Transform(&Camera::up, &D3DXVECTOR3(0.0f, 1.0f, 0.f), &Camera::targetAngle);	// get the target position from camera
 		D3DXVec3Transform(&Camera::targetRelPosRight, &D3DXVECTOR3(0.0f, 0.0f, 1.f), &Camera::targetRightAngle);
 
 		{ // MOVEMENT
@@ -86,12 +92,10 @@ namespace Camera {
 		}
 
 		{ // ANGLE
-			Camera::targetAbsPos.x = Camera::pos.x + Camera::targetRelPos.x;
-			Camera::targetAbsPos.y = Camera::pos.y + Camera::targetRelPos.y;	// get the absolute position of target
-			Camera::targetAbsPos.z = Camera::pos.z + Camera::targetRelPos.z;
+			Camera::targetAbsPos = Camera::pos + VECTOR3(Camera::targetRelPos);
 		}
 
 		// SET VIEW
-		D3DXMatrixLookAtLH(&Camera::view, &Camera::pos, &Camera::targetAbsPos, &Camera::up); // get view
+		D3DXMatrixLookAtLH(&Camera::view, &Camera::pos, &Camera::targetAbsPos, &VECTOR3(Camera::up)); // get view
 	}
 }

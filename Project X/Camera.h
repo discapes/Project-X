@@ -4,7 +4,7 @@
 namespace Camera {
 	extern D3DXVECTOR3 pos;
 	extern D3DXVECTOR3 targetAbsPos;
-	extern D3DXVECTOR3 up;
+	extern D3DXVECTOR4 up;
 
 	extern D3DXMATRIX view;
 

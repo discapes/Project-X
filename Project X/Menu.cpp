@@ -53,12 +53,12 @@ void Menu::render()
     {
         using namespace Camera;
         ImGui::Begin("Camera");
-        ImGui::InputFloat("targetRelPos X", &targetRelPos.x, 0.1f, 0.1f);
-        ImGui::InputFloat("targetRelPos Y", &targetRelPos.y, 0.1f, 0.1f);
-        ImGui::InputFloat("targetRelPos Z", &targetRelPos.z, 0.1f, 0.1f);
 
         ImGui::SliderFloat("angleX", &angleX, -6.28f, 6.28f);
         ImGui::SliderFloat("angleY", &angleY, -6.28f, 6.28f);
+        ImGui::Text("up.x = %f", up.x);
+        ImGui::Text("up.y = %f", up.y);
+        ImGui::Text("up.z = %f", up.z);
 
         ImGui::Checkbox("Show texture", &show_another_window);
 

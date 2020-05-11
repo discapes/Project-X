@@ -29,6 +29,13 @@ namespace DirectX {
 		Vertex operator*(float d) {
 			return { x * d, y * d, z * d, color };
 		}
+
+		Vertex& operator+=(const D3DXVECTOR3& rhs) {
+			this->x += rhs.x;
+			this->y += rhs.y;
+			this->z += rhs.z;
+			return *this;
+		}
 		explicit Vertex(D3DXVECTOR3 _vector) : x{ _vector.x }, y{ _vector.y }, z{ _vector.z }, color{D3DCOLOR_RGBA(255, 255, 255, 255)} {};
 	};
 

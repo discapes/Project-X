@@ -8,18 +8,12 @@
 #include "Window.h"
 #include <directxmath.h>
 #include "Camera.h"
+#include "Cube.h"
 
 namespace DirectX {
 
 	IDirect3D9* d3d9 = NULL;
 	IDirect3DDevice9* d3dDevice = NULL;
-
-	//
-	IDirect3DVertexBuffer9* SquareVertexBuffer = 0;
-	IDirect3DIndexBuffer9* SquareIndexBuffer = 0;
-	constexpr int SquareVertexCount = 4;
-	constexpr int SquareIndexCount = 6;
-	//
 
 	int setupScene() {
 		Menu::init(d3dDevice, Window::hwnd);
@@ -35,7 +29,7 @@ namespace DirectX {
 		D3DXMATRIX proj;
 		D3DXMatrixPerspectiveFovLH(
 			&proj,
-			D3DX_PI * 0.5f, // fov
+			Settings::D3D::fov, // fov
 			(float)Settings::Window::width / (float)Settings::Window::height,
 			0.0f, // start of sight
 			1000.0f); // end of sight
@@ -47,8 +41,8 @@ namespace DirectX {
 	}
 
 	void cleanUp() {
-		SquareIndexBuffer->Release();
-		SquareVertexBuffer->Release();
+		Cube::cleanUp();
+		Crosshair::cleanUp();
 		d3dDevice->Release();
 		if (d3d9) {    //If there is a Direct3D device
 			d3d9->Release();    //Release Memory from the device
@@ -78,8 +72,8 @@ namespace DirectX {
 
 
 		// DRAW
-		d3dDevice->SetStreamSource(0, SquareVertexBuffer, 0, sizeof(Vertex));
-		d3dDevice->SetIndices(SquareIndexBuffer);
+		d3dDevice->SetStreamSource(0, Cube::SquareVertexBuffer, 0, sizeof(Vertex));
+		d3dDevice->SetIndices(Cube::SquareIndexBuffer);
 		d3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);
 
 		d3dDevice->SetStreamSource(0, Crosshair::VertexBuffer, 0, sizeof(Vertex));
@@ -204,62 +198,10 @@ namespace DirectX {
 	}
 
 	void initVertices() {
-		d3dDevice->CreateVertexBuffer(
-			SquareVertexCount * sizeof(Vertex),
-			D3DUSAGE_WRITEONLY,
-			VertexFVF,
-			D3DPOOL_MANAGED,
-			&SquareVertexBuffer,
-			0);
-
-		d3dDevice->CreateIndexBuffer(
-			SquareIndexCount * sizeof(WORD),
-			D3DUSAGE_WRITEONLY,
-			D3DFMT_INDEX16,
-			D3DPOOL_MANAGED,
-			&SquareIndexBuffer,
-			0);
 
 		Crosshair::init(d3dDevice);
+		
+		Cube::init(d3dDevice, { 0.f, 0.f, 2.f });
 
-		// Vertices
-
-		Vertex* vertices;
-
-		//Lock vertex buffer
-		SquareVertexBuffer->Lock(0, 0, (void**)&vertices, 0);
-
-		vertices[0].x = -0.5f;
-		vertices[0].y = 0.5f;
-		vertices[0].z = 0.0f;
-		vertices[0].color = D3DCOLOR_XRGB(255, 0, 0);
-
-		vertices[1].x = 0.5f;
-		vertices[1].y = 0.5f;
-		vertices[1].z = 0.0f;
-		vertices[1].color = D3DCOLOR_XRGB(0, 255, 0);
-
-		vertices[2].x = -0.5f;
-		vertices[2].y = -0.5f;
-		vertices[2].z = 0.0f;
-		vertices[2].color = D3DCOLOR_XRGB(0, 0, 255);
-
-		vertices[3].x = 0.5f;
-		vertices[3].y = -0.5f;
-		vertices[3].z = 0.0f;
-		vertices[3].color = D3DCOLOR_XRGB(255, 0, 0);
-
-		SquareVertexBuffer->Unlock(); //Unlock vertex buffer
-
-		// Indices:
-
-		WORD* indices = 0;
-
-		SquareIndexBuffer->Lock(0, 0, (void**)&indices, 0);
-
-		indices[0] = 0; indices[1] = 1; indices[2] = 2;
-		indices[3] = 2; indices[4] = 1; indices[5] = 3;
-
-		SquareIndexBuffer->Unlock();
 	}
 }
