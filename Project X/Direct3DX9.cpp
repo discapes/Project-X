@@ -72,9 +72,12 @@ namespace DirectX {
 
 
 		// DRAW
-		d3dDevice->SetStreamSource(0, Cube::CubeVertexBuffer, 0, sizeof(Vertex));
-		d3dDevice->SetIndices(Cube::CubeIndexBuffer);
-		d3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 0, 0, 2);
+		//d3dDevice->SetStreamSource(0, Cube::VertexBuffer, 0, sizeof(Vertex));
+		//d3dDevice->SetIndices(Cube::IndexBuffer);
+		//d3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 0, 0, 2);
+		d3dDevice->SetStreamSource(0, Cube::VertexBuffer, 0, sizeof(Vertex));
+		d3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+
 		d3dDevice->SetStreamSource(0, Crosshair::VertexBuffer, 0, sizeof(Vertex));
 		d3dDevice->DrawPrimitive(D3DPT_LINELIST, 0, Crosshair::PrimitiveCount);
 
