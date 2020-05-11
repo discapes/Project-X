@@ -7,15 +7,22 @@ namespace DirectX {
 	//Vertex structure
 	struct Vertex {
 		FLOAT x{}, y{}, z{}, u{}, v{};
-		D3DCOLOR color;
-		Vertex() {
-			color = D3DCOLOR_RGBA(255, 255, 255, 255);
-		};
+		D3DCOLOR color{ D3DCOLOR_RGBA(255, 255, 255, 255) };
 		Vertex(float _x, float _y, float _z, D3DCOLOR _color) {
 			x = _x;
 			y = _y;
 			z = _z;
 			color = _color;
+		}
+		Vertex(float _x, float _y, float _z, float _u, float _v) {
+			x = _x;
+			y = _y;
+			z = _z;
+			u = _u;
+			v = _v;
+		}
+		Vertex() {
+
 		}
 		Vertex operator+(Vertex d) {
 			return { x + d.x, y + d.y, z + d.z, d.color };

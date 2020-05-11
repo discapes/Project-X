@@ -33,10 +33,21 @@ namespace DirectX {
 		// You are now ready to go!
 		// Set all your stream sources, and DrawIndexedPrimitive()
 
+
+
+
+
 		Menu::init(d3dDevice, Window::hwnd);
 
 		d3dDevice->SetRenderState(D3DRS_LIGHTING, false);
 		//d3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+		d3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+
+		//TODO
+		d3dDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+		d3dDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+		d3dDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+
 		initVertices();
 
 		// init camera
@@ -81,7 +92,7 @@ namespace DirectX {
 		Crosshair::move((Vertex)Camera::pos);
 
 		//Clear the window to 0x00000000 (black) 0x00000055 (dark blue
-		d3dDevice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00000000, 1.0f, 0);
+		d3dDevice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00000055, 1.0f, 0);
 		//Start drawing our scene
 		d3dDevice->BeginScene();
 
@@ -91,8 +102,13 @@ namespace DirectX {
 		//d3dDevice->SetStreamSource(0, Cube::VertexBuffer, 0, sizeof(Vertex));
 		//d3dDevice->SetIndices(Cube::IndexBuffer);
 		//d3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 0, 0, 2);
+		//d3dDevice->SetStreamSource(0, Cube::VertexBuffer, 0, sizeof(Vertex));
+		//d3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, Cube::PrimitiveCount);
+
+		d3dDevice->SetTexture(0, Cube::Texture); //set texture
+
 		d3dDevice->SetStreamSource(0, Cube::VertexBuffer, 0, sizeof(Vertex));
-		d3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+		d3dDevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, Cube::PrimitiveCount);
 
 		d3dDevice->SetStreamSource(0, Crosshair::VertexBuffer, 0, sizeof(Vertex));
 		d3dDevice->DrawPrimitive(D3DPT_LINELIST, 0, Crosshair::PrimitiveCount);
