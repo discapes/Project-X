@@ -3,24 +3,24 @@
 
 namespace Cube {
 
-	IDirect3DVertexBuffer9* SquareVertexBuffer = 0;
-	IDirect3DIndexBuffer9* SquareIndexBuffer = 0;
+	IDirect3DVertexBuffer9* CubeVertexBuffer = 0;
+	IDirect3DIndexBuffer9* CubeIndexBuffer = 0;
 
 	void init(IDirect3DDevice9* d3dDevice, D3DXVECTOR3 pos) {
 		d3dDevice->CreateVertexBuffer(
-			SquareVertexCount * sizeof(DirectX::Vertex),
+			CubeVertexCount * sizeof(DirectX::Vertex),
 			D3DUSAGE_WRITEONLY,
 			DirectX::VertexFVF,
 			D3DPOOL_MANAGED,
-			&SquareVertexBuffer,
+			&CubeVertexBuffer,
 			0);
 
 		d3dDevice->CreateIndexBuffer(
-			SquareIndexCount * sizeof(WORD),
+			CubeIndexCount * sizeof(WORD),
 			D3DUSAGE_WRITEONLY,
 			D3DFMT_INDEX16,
 			D3DPOOL_MANAGED,
-			&SquareIndexBuffer,
+			&CubeIndexBuffer,
 			0);
 
 		// Vertices
@@ -28,7 +28,7 @@ namespace Cube {
 		DirectX::Vertex* vertices;
 
 		//Lock vertex buffer
-		SquareVertexBuffer->Lock(0, 0, (void**)&vertices, 0);
+		CubeVertexBuffer->Lock(0, 0, (void**)&vertices, 0);
 
 		vertices[0].x = -0.5f;
 		vertices[0].y = 0.5f;
@@ -54,23 +54,23 @@ namespace Cube {
 			vertices[i] += pos;
 		}
 
-		SquareVertexBuffer->Unlock(); //Unlock vertex buffer
+		CubeVertexBuffer->Unlock(); //Unlock vertex buffer
 
 		// Indices:
 
 		WORD* indices = 0;
 
-		SquareIndexBuffer->Lock(0, 0, (void**)&indices, 0);
+		CubeIndexBuffer->Lock(0, 0, (void**)&indices, 0);
 
 		indices[0] = 0; indices[1] = 1; indices[2] = 2;
 		indices[3] = 2; indices[4] = 1; indices[5] = 3;
 
-		SquareIndexBuffer->Unlock();
+		CubeIndexBuffer->Unlock();
 	}
 
 	void cleanUp() {
-		SquareVertexBuffer->Release();
-		SquareIndexBuffer->Release();
+		CubeVertexBuffer->Release();
+		CubeIndexBuffer->Release();
 	}
 
 }

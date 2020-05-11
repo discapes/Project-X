@@ -7,7 +7,7 @@ namespace Crosshair {
 	IDirect3DVertexBuffer9* VertexBuffer;
 	DirectX::Vertex offsets[24];
 	float length{0.1f};
-	float distFromPos{ 1.f };
+	float distFromPos{ 0.1f };
 
 	void init(IDirect3DDevice9* d3dDevice) {
 		d3dDevice->CreateVertexBuffer(
@@ -17,6 +17,7 @@ namespace Crosshair {
 			D3DPOOL_MANAGED,
 			&VertexBuffer,
 			0);
+
 		{ // set offsets
 			int sideNum{};
 			float f = distFromPos;
