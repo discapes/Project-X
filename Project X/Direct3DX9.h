@@ -13,6 +13,15 @@ namespace DirectX {
 
 		extern float angleX;
 		extern float angleY;
+
+		extern D3DXVECTOR4 targetRelPos;
+		extern D3DXVECTOR4 targetRelPosRight;
+
+		extern D3DXMATRIX targetAngle;
+		extern D3DXMATRIX targetRightAngle;
+
+		extern D3DXMATRIX rightAngle;
+		extern D3DXMATRIX upAngle;
 	}
 
     //Vertex structure
