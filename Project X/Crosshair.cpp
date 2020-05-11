@@ -13,7 +13,7 @@ namespace Crosshair {
 		d3dDevice->CreateVertexBuffer(
 			24 * sizeof(DirectX::Vertex),
 			D3DUSAGE_WRITEONLY,
-			DirectX::VertexFVF,
+			0,
 			D3DPOOL_MANAGED,
 			&VertexBuffer,
 			0);

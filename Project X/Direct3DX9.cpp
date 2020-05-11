@@ -14,8 +14,25 @@ namespace DirectX {
 
 	IDirect3D9* d3d9 = NULL;
 	IDirect3DDevice9* d3dDevice = NULL;
+	IDirect3DVertexDeclaration9* myVertexDecl;
 
 	int setupScene() {
+
+		//Define the Flexible vertex format
+		D3DVERTEXELEMENT9 simple_decl[] = { {0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
+		{0, 12, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0},
+		{0, 20, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0},
+		D3DDECL_END() };
+
+		// d3dDevice is your LPDIRECT3DDEVICE9
+		// simpleDecl is the array of D3DVERTEXELEMENT9s we defined above
+		d3dDevice->CreateVertexDeclaration(simple_decl, &myVertexDecl);
+		// d3dDevice is your LPDIRECT3DDEVICE9
+		// myVertexDecl is the LPDIRECT3DVERTEXDECLARATION9 that we defined above
+		d3dDevice->SetVertexDeclaration( myVertexDecl );
+		// You are now ready to go!
+		// Set all your stream sources, and DrawIndexedPrimitive()
+
 		Menu::init(d3dDevice, Window::hwnd);
 
 		d3dDevice->SetRenderState(D3DRS_LIGHTING, false);
@@ -35,7 +52,6 @@ namespace DirectX {
 			1000.0f); // end of sight
 
 		d3dDevice->SetTransform(D3DTS_PROJECTION, &proj);
-		d3dDevice->SetFVF(VertexFVF);
 
 		return 0;
 	}

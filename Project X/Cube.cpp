@@ -10,7 +10,7 @@ namespace Cube {
 		d3dDevice->CreateVertexBuffer(
 			VertexCount * sizeof(DirectX::Vertex),
 			D3DUSAGE_WRITEONLY,
-			DirectX::VertexFVF,
+			0,
 			D3DPOOL_MANAGED,
 			&VertexBuffer,
 			0);

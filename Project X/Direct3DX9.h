@@ -6,12 +6,9 @@ namespace DirectX {
 
 	//Vertex structure
 	struct Vertex {
-		FLOAT x, y, z;
-		D3DCOLOR color;    //add color to vertex structure
+		FLOAT x{}, y{}, z{}, u{}, v{};
+		D3DCOLOR color;
 		Vertex() {
-			x = 0;
-			y = 0;
-			z = 0;
 			color = D3DCOLOR_RGBA(255, 255, 255, 255);
 		};
 		Vertex(float _x, float _y, float _z, D3DCOLOR _color) {
@@ -39,8 +36,7 @@ namespace DirectX {
 		explicit Vertex(D3DXVECTOR3 _vector) : x{ _vector.x }, y{ _vector.y }, z{ _vector.z }, color{D3DCOLOR_RGBA(255, 255, 255, 255)} {};
 	};
 
-	//Define the Flexible vertex format
-	inline const DWORD VertexFVF = D3DFVF_XYZ | D3DFVF_DIFFUSE;
+	extern IDirect3DVertexDeclaration9* myVertexDecl;
 
 	int setupScene();
 	void cleanUp();
