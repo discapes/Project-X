@@ -66,6 +66,7 @@ namespace DirectX {
 		d3dDevice->LightEnable(0, true); //Enable the light
 		//d3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 		d3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+		d3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
 
 		//TODO
 		d3dDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
@@ -104,6 +105,8 @@ namespace DirectX {
 
 	int renderScene(float timeDelta)    //Renders a single frame
 	{
+		d3dDevice->SetRenderState(D3DRS_LIGHTING, true);    //Enable Lighting
+		d3dDevice->SetVertexDeclaration(myVertexDecl);
 		// MENU TOGGLE
 		static bool prevState = false;
 		if (((bool)GetAsyncKeyState(VK_INSERT) == true) && (prevState == false))

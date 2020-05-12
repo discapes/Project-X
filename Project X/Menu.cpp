@@ -60,6 +60,7 @@ void Menu::render()
         ImGui::Text("y = %f", pos.y);
         ImGui::Text("z = %f", pos.z);
 
+
         ImGui::Checkbox("Show texture", &show_another_window);
 
         ImGui::End();
