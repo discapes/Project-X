@@ -17,6 +17,7 @@ namespace DirectX {
 	IDirect3DVertexDeclaration9* myVertexDecl;
 	D3DMATERIAL9 white;    //Pointer to store material
 	D3DLIGHT9 light;    //Pointer to store light
+	D3DLIGHT9 spotLight;    //Pointer to store light
 
 	int setupScene() {
 
@@ -45,6 +46,16 @@ namespace DirectX {
 		light.Specular = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f) * 0.1f;
 		light.Direction = { 0.5f, -0.5f, 1.f };
 
+		//Create the light
+		ZeroMemory(&spotLight, sizeof(spotLight));
+		spotLight.Type = D3DLIGHT_SPOT;
+		spotLight.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		spotLight.Ambient = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f) * 0.2f;
+		spotLight.Specular = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f) * 0.1f;
+		spotLight.Position = { 0.f, 0.f, 0.f };
+		spotLight.Range = 1.f;
+
+
 		//Create the material
 		ZeroMemory(&white, sizeof(white));
 		white.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
@@ -52,6 +63,8 @@ namespace DirectX {
 		white.Specular = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 		white.Emissive = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 		white.Power = 5.0f;
+
+
 
 
 
@@ -64,6 +77,8 @@ namespace DirectX {
 		d3dDevice->SetRenderState(D3DRS_LIGHTING, true);    //Enable Lighting
 		d3dDevice->SetLight(0, &light);    //Set the light
 		d3dDevice->LightEnable(0, true); //Enable the light
+		d3dDevice->SetLight(1, &spotLight);    //Set the light
+		d3dDevice->LightEnable(1, true); //Enable the light
 		//d3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 		d3dDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 		d3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, true);
@@ -117,6 +132,8 @@ namespace DirectX {
 		DirectX::d3dDevice->SetTransform(D3DTS_VIEW, &Camera::view); // set D3DTS_VIEW to view
 
 		Crosshair::move((Vertex)Camera::pos);
+		spotLight.Position = Camera::pos;
+		d3dDevice->SetLight(1, &spotLight);    //Set the light
 
 		//Clear the window to 0x00000000 (black) 0x00000055 (dark blue
 		d3dDevice->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00000055, 1.0f, 0);
