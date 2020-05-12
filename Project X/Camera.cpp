@@ -1,5 +1,6 @@
 #include <d3dx9math.h>
 #include "Camera.h"
+#include "Settings.h"
 
 namespace Camera {
 	D3DXVECTOR3 pos(0.0f, 0.0f, 0.0f);
@@ -30,15 +31,17 @@ namespace Camera {
 	float angleY{ 0 };
 	void handleControls(float timeDelta)
 	{
+		using Settings::Keys::flySpeed;
+		using Settings::Keys::lookSpeed;
 		// GET ANGLES
 		if (GetAsyncKeyState(VK_UP)) // UP
-			Camera::angleX -= timeDelta * 1000.f;
+			Camera::angleX -= timeDelta * lookSpeed;
 		if (GetAsyncKeyState(VK_DOWN)) // DOWN
-			Camera::angleX += timeDelta * 1000.f;
+			Camera::angleX += timeDelta * lookSpeed;
 		if (GetAsyncKeyState(VK_RIGHT)) // RIGHT
-			Camera::angleY += timeDelta * 1000.f;
+			Camera::angleY += timeDelta * lookSpeed;
 		if (GetAsyncKeyState(VK_LEFT)) // LEFT
-			Camera::angleY -= timeDelta * 1000.f;
+			Camera::angleY -= timeDelta * lookSpeed;
 
 		if (GetAsyncKeyState(VK_RETURN)) { // ENTER
 			Camera::pos = { 0.0f, 0.0f, 0.f };
@@ -68,26 +71,26 @@ namespace Camera {
 
 		{ // MOVEMENT
 			if (GetAsyncKeyState(0x57)) { // W
-				Camera::pos.x += Camera::targetRelPos.x * timeDelta * 1000.f;
-				Camera::pos.z += Camera::targetRelPos.z * timeDelta * 1000.f;
+				Camera::pos.x += Camera::targetRelPos.x * timeDelta * flySpeed;
+				Camera::pos.z += Camera::targetRelPos.z * timeDelta * flySpeed;
 			}
 			if (GetAsyncKeyState(0x53)) { // S
-				Camera::pos.x -= Camera::targetRelPos.x * timeDelta * 1000.f;
-				Camera::pos.z -= Camera::targetRelPos.z * timeDelta * 1000.f;
+				Camera::pos.x -= Camera::targetRelPos.x * timeDelta * flySpeed;
+				Camera::pos.z -= Camera::targetRelPos.z * timeDelta * flySpeed;
 			}
 			if (GetAsyncKeyState(0x44)) { // D
-				Camera::pos.x += Camera::targetRelPosRight.x * timeDelta * 1000.f;
-				Camera::pos.z += Camera::targetRelPosRight.z * timeDelta * 1000.f;
+				Camera::pos.x += Camera::targetRelPosRight.x * timeDelta * flySpeed;
+				Camera::pos.z += Camera::targetRelPosRight.z * timeDelta * flySpeed;
 			}
 			if (GetAsyncKeyState(0x41)) {// A
-				Camera::pos.x -= Camera::targetRelPosRight.x * timeDelta * 1000.f;
-				Camera::pos.z -= Camera::targetRelPosRight.z * timeDelta * 1000.f;
+				Camera::pos.x -= Camera::targetRelPosRight.x * timeDelta * flySpeed;
+				Camera::pos.z -= Camera::targetRelPosRight.z * timeDelta * flySpeed;
 			}
 			if (GetAsyncKeyState(VK_LSHIFT)) {// Left Shift
-				Camera::pos.y += timeDelta * 1000.f;
+				Camera::pos.y += timeDelta * flySpeed;
 			}
 			if (GetAsyncKeyState(VK_LCONTROL)) {// Left Control
-				Camera::pos.y -= timeDelta * 1000.f;
+				Camera::pos.y -= timeDelta * flySpeed;
 			}
 		}
 
